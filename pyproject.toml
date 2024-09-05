@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "spacesship"
+version = "0.1.0"
+description = ""
+authors = ["jsulz <j.sulzdorf@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+gradio = "^4.42.0"
+datasets = "^2.21.0"
+pandas = "^2.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
