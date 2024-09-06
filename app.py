@@ -52,10 +52,3 @@ with gr.Blocks() as demo:
 
 print(df.head())
 demo.launch()
-
-"""                                 id author                created_at             last_modified                         subdomain                                               host  likes     sdk      tags  readme_size python_version license duplicated_from models datasets emoji colorFrom colorTo pinned    stage   hardware devMode custom_domains
-2            52Hz/CMFNet_deblurring   52Hz 2022-03-02 23:29:35+00:00 2024-05-28 11:25:33+00:00            52hz-cmfnet-deblurring            https://52hz-cmfnet-deblurring.hf.space     17  gradio  [gradio]        924.0           None    None            None   None     None     🍻    indigo  indigo  False  RUNNING  cpu-basic   False             []
-3              52Hz/CMFNet_dehazing   52Hz 2022-03-02 23:29:35+00:00 2024-05-28 11:08:25+00:00              52hz-cmfnet-dehazing              https://52hz-cmfnet-dehazing.hf.space      5  gradio  [gradio]        917.0           None    None            None   None     None     ☁      gray    gray  False  RUNNING  cpu-basic   False             []
-4            52Hz/CMFNet_deraindrop   52Hz 2022-03-02 23:29:35+00:00 2024-05-30 02:59:24+00:00            52hz-cmfnet-deraindrop            https://52hz-cmfnet-deraindrop.hf.space     10  gradio  [gradio]        920.0           None    None            None   None     None     💦      blue    blue  False  RUNNING  cpu-basic   False             []
-5  52Hz/HWMNet_lowlight_enhancement   52Hz 2022-03-02 23:29:35+00:00 2023-05-31 06:37:21+00:00  52hz-hwmnet-lowlight-enhancement  https://52hz-hwmnet-lowlight-enhancement.hf.space      8  gradio  [gradio]       1286.0           None    None            None   None     None     🕶    indigo    None  False  RUNNING  cpu-basic   False             []
-7  52Hz/SRMNet_real_world_denoising   52Hz 2022-03-02 23:29:35+00:00 2023-05-31 10:03:04+00:00  52hz-srmnet-real-world-denoising  https://52hz-srmnet-real-world-denoising.hf.space     17  gradio  [gradio]        926.0           None    None            None   None     None     🌪      pink  yellow  False  RUNNING  cpu-basic   False             []"""
