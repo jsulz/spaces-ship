@@ -9,6 +9,7 @@ app_file: app.py
 pinned: false
 license: mit
 short_description: See detailed information about all Spaces across the Hub.
+python_version: 3.12.2
 ---
 
 # Spaces Ship
