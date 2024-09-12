@@ -1,3 +1,16 @@
+---
+title: Spaces Ship
+emoji: 🚀
+colorFrom: red
+colorTo: purple
+sdk: gradio
+sdk_version: 4.42.0
+app_file: app.py
+pinned: false
+license: mit
+short_description: A dashboard to see detailed information about all Spaces across the Hub.
+---
+
 # Spaces Ship
 
 This is a spaceship through Spaces.
