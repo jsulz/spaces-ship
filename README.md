@@ -8,7 +8,7 @@ sdk_version: 4.42.0
 app_file: app.py
 pinned: false
 license: mit
-short_description: A dashboard to see detailed information about all Spaces across the Hub.
+short_description: See detailed information about all Spaces across the Hub.
 ---
 
 # Spaces Ship
