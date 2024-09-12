@@ -198,23 +198,8 @@ def flatten_column(_df, column):
 
 with gr.Blocks(fill_width=True) as demo:
     df = load_transform_data()
-    df = df[df["stage"] == "RUNNING"]
+
     with gr.Tab(label="Spaces Overview"):
-
-        # The Pandas dataframe has a datetime column. Plot the growth of spaces (row entries) over time.
-        # The x-axis should be the date and the y-axis should be the cumulative number of spaces created up to that date .
-        df = df.sort_values("created_at")
-        df["cumulative_spaces"] = df["created_at"].rank(method="first").astype(int)
-        fig1 = px.line(
-            df,
-            x="created_at",
-            y="cumulative_spaces",
-            title="Growth of Spaces Over Time",
-            labels={"created_at": "Date", "cumulative_spaces": "Number of Spaces"},
-            template="plotly_dark",
-        )
-        gr.Plot(fig1)
-
         with gr.Row():
             # Create a pie charge showing the distribution of spaces by SDK
             fig2 = px.pie(

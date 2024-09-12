@@ -41,8 +41,6 @@ All of this needs context needs to live in the app in some form alongside the co
 
 All of the labels and words that do exist need cleanup. Not worried about that for the moment.
 
-The charts filter out all non-running spaces, which is suboptimal. Unfortunately Plotly starts to squak when you have too many data points. The only alternative here is to move to Matplotlib, which I can do, but I'm being lazy.
-
 # Spaces Overview
 
 Charts exist for the following (commentary for each in sub-bullets):
