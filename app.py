@@ -4,6 +4,7 @@ import numpy as np
 import plotly.express as px
 from datasets import load_dataset
 
+
 def load_transform_data():
     """
     Load and transform data from a parquet file.
@@ -11,9 +12,9 @@ def load_transform_data():
     Returns:
         pandas.DataFrame: Transformed dataframe.
     """
-    spaces_dataset = 'jsulz/space-stats'
+    spaces_dataset = "jsulz/space-stats"
     dataset = load_dataset(spaces_dataset)
-    df = dataset['train'].to_pandas()
+    df = dataset["train"].to_pandas()
     # combine the sdk and tags columns, one of which is a string and the other is an array of strings
     df["sdk"] = df["sdk"].apply(lambda x: np.array([str(x)]))
     df["licenses"] = df["license"].apply(
@@ -25,7 +26,7 @@ def load_transform_data():
     )
 
     # Fill the NaN values with an empty string
-    df['emoji'] = np.where(df['emoji'].isnull(), '', df['emoji'])
+    df["emoji"] = np.where(df["emoji"].isnull(), "", df["emoji"])
 
     # where the custom_domains column is not null, use that as the url, otherwise, use the host column
     df["url"] = np.where(
@@ -37,9 +38,9 @@ def load_transform_data():
     # Build up a pretty url that's clickable with the emoji
     df["url"] = df[["url", "emoji"]].apply(
         lambda x: (
-            f"<a target='_blank' href=https://huggingface.co/spaces/{x.iloc[0]}>{str(x.iloc[1]) + " " + x.iloc[0]}</a>"
-            if x.iloc[0] is not None and "/" in x.iloc[0]
-            else f"<a target='_blank' href=https://{x.iloc[0][0]}>{str(x.iloc[1]) + " " + x.iloc[0][0]}</a>"
+            f'<a target="_blank" href=https://huggingface.co/spaces/{x.iloc[0]}>{str(x.iloc[1]) + " " + x.iloc[0]}</a>'
+            if x.iloc[0] is not None
+            else f'<a target="_blank" href=https://{x.iloc[0][0]}>{str(x.iloc[1]) + " " + x.iloc[0][0]}</a>'
         ),
         axis=1,
     )
@@ -145,9 +146,7 @@ def filtered_df(
         }
     )
     if filtered_devmode:
-        _df = _df[
-            _df["devMode"] == filtered_devmode
-        ]
+        _df = _df[_df["devMode"] == filtered_devmode]
 
     return _df[["URL", "Likes", "Models", "Datasets", "Licenses"]]
 
@@ -158,7 +157,7 @@ def count_items(items):
     Parameters:
     items (dataframe column): A dataframe column containing a list of items.
     Returns:
-    tuple: A tuple containing two dictionaries. The first dictionary contains the count of each item, 
+    tuple: A tuple containing two dictionaries. The first dictionary contains the count of each item,
     and the second dictionary contains the count of each author.
     """
     items = np.concatenate([arr for arr in items.values if arr is not None])
@@ -169,13 +168,14 @@ def count_items(items):
             item_count[item] += 1
         else:
             item_count[item] = 1
-        author = item.split('/')[0]
+        author = item.split("/")[0]
         if author in item_author_count:
             item_author_count[author] += 1
         else:
             item_author_count[author] = 1
-    
+
     return item_count, item_author_count
+
 
 def flatten_column(_df, column):
     """
@@ -203,7 +203,7 @@ with gr.Blocks(fill_width=True) as demo:
         # The Pandas dataframe has a datetime column. Plot the growth of spaces (row entries) over time.
         # The x-axis should be the date and the y-axis should be the cumulative number of spaces created up to that date .
         df = df.sort_values("created_at")
-        df['cumulative_spaces'] = df['created_at'].rank(method='first').astype(int)
+        df["cumulative_spaces"] = df["created_at"].rank(method="first").astype(int)
         fig1 = px.line(
             df,
             x="created_at",
@@ -216,16 +216,29 @@ with gr.Blocks(fill_width=True) as demo:
 
         with gr.Row():
             # Create a pie charge showing the distribution of spaces by SDK
-            fig2 = px.pie(df, names='sdk', title='Distribution of Spaces by SDK', template='plotly_dark')
+            fig2 = px.pie(
+                df,
+                names="sdk",
+                title="Distribution of Spaces by SDK",
+                template="plotly_dark",
+            )
             gr.Plot(fig2)
 
             # create a pie chart showing the distribution of spaces by emoji for the top 10 used emojis
-            emoji_counts = df['emoji'].value_counts().head(10).reset_index()
-            fig3 = px.pie(emoji_counts, names='emoji', values='count', title='Distribution of Spaces by Emoji', template='plotly_dark')
+            emoji_counts = df["emoji"].value_counts().head(10).reset_index()
+            fig3 = px.pie(
+                emoji_counts,
+                names="emoji",
+                values="count",
+                title="Distribution of Spaces by Emoji",
+                template="plotly_dark",
+            )
             gr.Plot(fig3)
 
         # Create a scatter plot showing the relationship between the number of likes and the number of spaces created by an author
-        author_likes = df.groupby('author').agg({'likes': 'sum', 'id': 'count'}).reset_index()
+        author_likes = (
+            df.groupby("author").agg({"likes": "sum", "id": "count"}).reset_index()
+        )
         fig4 = px.scatter(
             author_likes,
             x="id",
@@ -238,7 +251,13 @@ with gr.Blocks(fill_width=True) as demo:
         gr.Plot(fig4)
 
         # Create a scatter plot showing the relationship between the number of likes and the number of spaces created by an author
-        emoji_likes = df.groupby('emoji').agg({'likes': 'sum', 'id': 'count'}).sort_values(by='likes', ascending=False).head(20).reset_index()
+        emoji_likes = (
+            df.groupby("emoji")
+            .agg({"likes": "sum", "id": "count"})
+            .sort_values(by="likes", ascending=False)
+            .head(20)
+            .reset_index()
+        )
         fig10 = px.scatter(
             emoji_likes,
             x="id",
@@ -251,8 +270,8 @@ with gr.Blocks(fill_width=True) as demo:
         gr.Plot(fig10)
 
         # Create a bar chart of hardware in use
-        hardware = df['hardware'].value_counts().reset_index()
-        hardware.columns = ['Hardware', 'Number of Spaces']
+        hardware = df["hardware"].value_counts().reset_index()
+        hardware.columns = ["Hardware", "Number of Spaces"]
         fig5 = px.bar(
             hardware,
             x="Hardware",
@@ -268,8 +287,10 @@ with gr.Blocks(fill_width=True) as demo:
         fig5.update_layout(yaxis_type="log")
         gr.Plot(fig5)
 
-        model_count, model_author_count = count_items(df['models'])
-        model_author_count = pd.DataFrame(model_author_count.items(), columns=['Model Author', 'Number of Spaces'])
+        model_count, model_author_count = count_items(df["models"])
+        model_author_count = pd.DataFrame(
+            model_author_count.items(), columns=["Model Author", "Number of Spaces"]
+        )
         fig8 = px.bar(
             model_author_count.sort_values("Number of Spaces", ascending=False).head(
                 20
@@ -281,7 +302,9 @@ with gr.Blocks(fill_width=True) as demo:
             template="plotly_dark",
         )
         gr.Plot(fig8)
-        model_count = pd.DataFrame(model_count.items(), columns=['Model', 'Number of Spaces'])
+        model_count = pd.DataFrame(
+            model_count.items(), columns=["Model", "Number of Spaces"]
+        )
         # then make a bar chart
         fig6 = px.bar(
             model_count.sort_values("Number of Spaces", ascending=False).head(20),
@@ -293,9 +316,13 @@ with gr.Blocks(fill_width=True) as demo:
         )
         gr.Plot(fig6)
 
-        dataset_count, dataset_author_count = count_items(df['datasets'])
-        dataset_count = pd.DataFrame(dataset_count.items(), columns=['Datasets', 'Number of Spaces'])
-        dataset_author_count = pd.DataFrame(dataset_author_count.items(), columns=['Dataset Author', 'Number of Spaces'])
+        dataset_count, dataset_author_count = count_items(df["datasets"])
+        dataset_count = pd.DataFrame(
+            dataset_count.items(), columns=["Datasets", "Number of Spaces"]
+        )
+        dataset_author_count = pd.DataFrame(
+            dataset_author_count.items(), columns=["Dataset Author", "Number of Spaces"]
+        )
         fig9 = px.bar(
             dataset_author_count.sort_values("Number of Spaces", ascending=False).head(
                 20
@@ -323,26 +350,30 @@ with gr.Blocks(fill_width=True) as demo:
 
         with gr.Row():
             # Get the most duplicated spaces
-            duplicated_spaces = df['duplicated_from'].value_counts().head(20).reset_index()
+            duplicated_spaces = (
+                df["duplicated_from"].value_counts().head(20).reset_index()
+            )
             duplicated_spaces["duplicated_from"] = duplicated_spaces[
                 "duplicated_from"
             ].apply(
                 lambda x: f"<a target='_blank' href=https://huggingface.co/spaces/{x}>{x}</a>"
             )
             duplicated_spaces.columns = ["Space", "Number of Duplicates"]
-            gr.DataFrame(duplicated_spaces, datatype="html" )
+            gr.DataFrame(duplicated_spaces, datatype="html")
 
             # Get the most liked spaces
-            liked_spaces = df[['id', 'likes']].sort_values(by='likes', ascending=False).head(20)
+            liked_spaces = (
+                df[["id", "likes"]].sort_values(by="likes", ascending=False).head(20)
+            )
             liked_spaces["id"] = liked_spaces["id"].apply(
                 lambda x: f"<a target='_blank' href=https://huggingface.co/spaces/{x}>{x}</a>"
             )
-            liked_spaces.columns = ['Space', 'Number of Likes']
+            liked_spaces.columns = ["Space", "Number of Likes"]
             gr.DataFrame(liked_spaces, datatype="html")
 
         with gr.Row():
             # Create a dataframe with the top 10 authors and the number of spaces they have created
-            author_counts = df['author'].value_counts().head(20).reset_index()
+            author_counts = df["author"].value_counts().head(20).reset_index()
             author_counts["author"] = author_counts["author"].apply(
                 lambda x: f"<a target='_blank' href=https://huggingface.co/{x}>{x}</a>"
             )
@@ -350,22 +381,25 @@ with gr.Blocks(fill_width=True) as demo:
             gr.DataFrame(author_counts, datatype="html")
 
             # create a dataframe where we groupby author and sum their likes
-            author_likes = df.groupby('author').agg({'likes': 'sum'}).reset_index()
-            author_likes = author_likes.sort_values(by='likes', ascending=False).head(20)
+            author_likes = df.groupby("author").agg({"likes": "sum"}).reset_index()
+            author_likes = author_likes.sort_values(by="likes", ascending=False).head(
+                20
+            )
             author_likes["author"] = author_likes["author"].apply(
                 lambda x: f"<a target='_blank' href=https://huggingface.co/{x}>{x}</a>"
             )
             author_likes.columns = ["Author", "Number of Likes"]
             gr.DataFrame(author_likes, datatype="html")
 
-
     with gr.Tab(label="Spaces Search"):
-        df = df[df['stage'] == 'RUNNING']
+        df = df[df["stage"] == "RUNNING"]
 
         # Layout
         with gr.Row():
             emoji = gr.Dropdown(
-                df["emoji"].unique().tolist(), label="Search by Emoji 🤗", multiselect=True
+                df["emoji"].unique().tolist(),
+                label="Search by Emoji 🤗",
+                multiselect=True,
             )  # Dropdown to select the emoji
             likes = gr.Slider(
                 minimum=df["likes"].min(),
@@ -375,7 +409,9 @@ with gr.Blocks(fill_width=True) as demo:
             )  # Slider to filter by likes
         with gr.Row():
             author = gr.Dropdown(
-                df["author"].unique().tolist(), label="Search by Author", multiselect=True
+                df["author"].unique().tolist(),
+                label="Search by Author",
+                multiselect=True,
             )
             # get the list of unique strings in the sdk_tags column
             sdk_tags = np.unique(np.concatenate(df["sdk_tags"].values))
@@ -405,15 +441,17 @@ with gr.Blocks(fill_width=True) as demo:
             )
 
         devmode = gr.Checkbox(label="Show Dev Mode Spaces")
-        clear = gr.ClearButton(components=[
+        clear = gr.ClearButton(
+            components=[
                 emoji,
                 author,
                 hardware,
                 sdk_tags,
                 models,
                 datasets,
-                space_license
-                ])
+                space_license,
+            ]
+        )
 
         df = pd.DataFrame(
             df[
@@ -432,7 +470,7 @@ with gr.Blocks(fill_width=True) as demo:
                     "r_models",
                     "r_datasets",
                     "r_licenses",
-                    'devMode'
+                    "devMode",
                 ]
             ]
         )
@@ -450,9 +488,9 @@ with gr.Blocks(fill_width=True) as demo:
                 devmode,
             ],
             datatype="html",
-            wrap=True, 
-            column_widths=["25%", "5%", "25%", "25%", "20%"]
+            wrap=True,
+            column_widths=["25%", "5%", "25%", "25%", "20%"],
         )
 
 
-demo.launch()
+demo.launch(share=True)
