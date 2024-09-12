@@ -72,6 +72,7 @@ def filtered_df(
     filtered_models,
     filtered_datasets,
     space_licenses,
+    filtered_devmode,
 ):
     """
     Filter the dataframe based on the given criteria.
@@ -143,6 +144,10 @@ def filtered_df(
             "r_licenses": "Licenses",
         }
     )
+    if filtered_devmode:
+        _df = _df[
+            _df["devMode"] == filtered_devmode
+        ]
 
     return _df[["URL", "Likes", "Models", "Datasets", "Licenses"]]
 
@@ -238,7 +243,7 @@ with gr.Blocks(fill_width=True) as demo:
             emoji_likes,
             x="id",
             y="likes",
-            title="Relationship between Emoji and Number of Likes",
+            title="Relationship between Space Emoji and Number of Likes",
             labels={"id": "Number of Spaces Created", "likes": "Number of Likes"},
             hover_data={"emoji": True},
             template="plotly_dark",
@@ -399,6 +404,7 @@ with gr.Blocks(fill_width=True) as demo:
                 multiselect=True,
             )
 
+        devmode = gr.Checkbox(label="Show Dev Mode Spaces")
         clear = gr.ClearButton(components=[
                 emoji,
                 author,
@@ -426,6 +432,7 @@ with gr.Blocks(fill_width=True) as demo:
                     "r_models",
                     "r_datasets",
                     "r_licenses",
+                    'devMode'
                 ]
             ]
         )
@@ -440,6 +447,7 @@ with gr.Blocks(fill_width=True) as demo:
                 models,
                 datasets,
                 space_license,
+                devmode,
             ],
             datatype="html",
             wrap=True, 
