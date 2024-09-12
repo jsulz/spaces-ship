@@ -198,6 +198,7 @@ def flatten_column(_df, column):
 
 with gr.Blocks(fill_width=True) as demo:
     df = load_transform_data()
+    df = df[df["stage"] == "RUNNING"]
     with gr.Tab(label="Spaces Overview"):
 
         # The Pandas dataframe has a datetime column. Plot the growth of spaces (row entries) over time.
